@@ -13,7 +13,6 @@ var rl = readline.createInterface({
     output: process.stdout
 });
 
-connection.connect();
 
 function getQuestion(id) {
 
@@ -58,7 +57,7 @@ function setQuestion(content, convId) {
         ConversationId: convId
     }
 
-    connection.query('INSERT INTO Response VALUES ?', values, function(error) {
+    connection.query('INSERT INTO Question SET ?', values, function(error) {
         if (error) {
             console.log(error.message);
         } else {
@@ -74,7 +73,7 @@ function setResponse(content, questionId) {
         QuestionId: questionId
     }
 
-    connection.query('INSERT INTO Response VALUES ?', values, function(error) {
+    connection.query('INSERT INTO Response SET ?', values, function(error) {
         if (error) {
             console.log(error.message);
         } else {
@@ -83,32 +82,34 @@ function setResponse(content, questionId) {
     });
 }
 
-function setConversation(id, name) {
+function setConversation(name, callback) {
 
     var values = {
-        owner: name
+        Owner: name
     }
 
-    connection.query('INSERT INTO Response VALUES ?', values, function(error, result) {
+    connection.query('INSERT INTO Conversation SET ?', values, function(error, result) {
         if (error) {
             console.log(error.message);
         } else {
             console.log('success');
-            return result.Id;
+            callback(result.Id);
         }
     });
 }
 
 function main() {
 
-    rl.question("Who is this conversation with?", function(reponse) {
-        var currentConvId = setConversation(response);
-    });
+    rl.question("Who is this conversation with? ", function(response) {
 
-    rl.question("What is your question?", function(question) {
-        setQuestion(question, currentId);
+        setConversation(response, function(currentConvId) {
+
+            rl.question("What is your question? ", function(question) {
+                console.log(currentConvId);
+                setQuestion(question, currentConvId);
+            });
+        });
     });
 }
 
-connection.end();
 main();
