@@ -37,18 +37,11 @@ def main():
     current_file = sys.argv[1]
     file_name = current_file.split('\\')[-1].split('.')[0]
 
-    print("Loading file...")
     with open(current_file) as json_file:
         data = json.load(json_file)
 
-    print("Getting Big 5 Values from file...")
     percentage_dict = get_big_5_values(data)
 
-    print("Saving Big 5 Values to CSV file...")
-    big_5_df = pd.DataFrame.from_dict(percentage_dict, orient='index')
-    big_5_df.to_csv(f'{OUTPUT_FOLDER}/{file_name}.csv')
-
-    print("Starting to plot image...")
     fig = plt.figure()
     axis = fig.add_subplot(111, projection="polar")
 
@@ -69,10 +62,8 @@ def main():
 
     plt.title("Big 5 Personality Star Chart")
 
-    print("Saving image file...")
     plt.savefig(f'{OUTPUT_FOLDER}/star_{file_name}.png')
 
-    print("Finished!")
 
 if __name__ == '__main__':
     main()
