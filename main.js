@@ -14,70 +14,72 @@ var rl = readline.createInterface({
 });
 
 
-function getQuestion(id) {
+function getQuestion(id, callback) {
 
     connection.query('SELECT * from Question WHERE id = ?', id, function(err, rows) {
           if (!err) {
                 console.log('The Response is: ', rows);
-                return rows;
+                callback(rows);
           } else {
                 console.log('Error while performing Query.');
                 throw(err);
           }});
 }
 
-function getResponse(id) {
+function getResponse(id, callback) {
 
     connection.query('SELECT * from Response WHERE id = ?', id, function(err, rows) {
           if (!err) {
                 console.log('The Response is: ', rows);
-                return rows;
+                callback(rows);
           } else {
                 console.log('Error while performing Query.');
                 throw(err);
           }});
 }
 
-function getConversation(id) {
+function getConversation(id, callback) {
 
     connection.query('SELECT * from Conversation WHERE id = ?', id, function(err, rows) {
           if (!err) {
                 console.log('The Response is: ', rows);
-                return rows;
+                callback(rows);
           } else {
                 console.log('Error while performing Query.');
                 throw(err);
           }});
 }
 
-function setQuestion(content, convId) {
+function setQuestion(content, convId, callback)
 
     var values = {
         Content: content,
         ConversationId: convId
     }
 
-    connection.query('INSERT INTO Question SET ?', values, function(error) {
+    connection.query('INSERT INTO Question SET ?', values, function(error, response) {
         if (error) {
             console.log(error.message);
         } else {
-            console.log('success');
+            console.log('Inserted Question Succesfully.');
+            callback(response.insertId);
         }
     });
 }
 
-function setResponse(content, questionId) {
+function setResponse(content, questionId, callback) {
 
     var values = {
         Content: content,
         QuestionId: questionId
     }
 
-    connection.query('INSERT INTO Response SET ?', values, function(error) {
+    connection.query('INSERT INTO Response SET ?', values, function(error, result) {
         if (error) {
             console.log(error.message);
         } else {
-            console.log('success');
+            console.log('Inserted Response Succesfully.');
+            callback(result.insertId);
         }
     });
 }
@@ -92,8 +94,8 @@ function setConversation(name, callback) {
         if (error) {
             console.log(error.message);
         } else {
-            console.log('success');
-            callback(result.Id);
+            console.log('Inserted Conversatoin Record.');
+            callback(result.insertId);
         }
     });
 }
@@ -105,7 +107,6 @@ function main() {
         setConversation(response, function(currentConvId) {
 
             rl.question("What is your question? ", function(question) {
-                console.log(currentConvId);
                 setQuestion(question, currentConvId);
             });
         });
