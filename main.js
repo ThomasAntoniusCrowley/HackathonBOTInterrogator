@@ -18,7 +18,6 @@ function getQuestion(id, callback) {
 
     connection.query('SELECT * from Question WHERE id = ?', id, function(err, rows) {
           if (!err) {
-                console.log('The Response is: ', rows);
                 callback(rows);
           } else {
                 console.log('Error while performing Query.');
@@ -30,7 +29,6 @@ function getResponse(id, callback) {
 
     connection.query('SELECT * from Response WHERE id = ?', id, function(err, rows) {
           if (!err) {
-                console.log('The Response is: ', rows);
                 callback(rows);
           } else {
                 console.log('Error while performing Query.');
@@ -42,7 +40,6 @@ function getConversation(id, callback) {
 
     connection.query('SELECT * from Conversation WHERE id = ?', id, function(err, rows) {
           if (!err) {
-                console.log('The Response is: ', rows);
                 callback(rows);
           } else {
                 console.log('Error while performing Query.');
@@ -61,7 +58,6 @@ function setQuestion(content, convId, callback) {
         if (error) {
             console.log(error.message);
         } else {
-            console.log('Inserted Question Succesfully.');
             callback(response.insertId);
         }
     });
@@ -78,7 +74,6 @@ function setResponse(content, questionId, callback) {
         if (error) {
             console.log(error.message);
         } else {
-            console.log('Inserted Response Succesfully.');
             callback(result.insertId);
         }
     });
@@ -94,7 +89,6 @@ function setConversation(name, callback) {
         if (error) {
             console.log(error.message);
         } else {
-            console.log('Inserted Conversatoin Record.');
             callback(result.insertId);
         }
     });
@@ -103,9 +97,7 @@ function setConversation(name, callback) {
 function main() {
 
     rl.question("Who is this conversation with? ", function(response) {
-
         setConversation(response, function(currentConvId) {
-
             rl.question("What is your question? ", function(question) {
                 setQuestion(question, currentConvId, function(returnId) {
                     console.log(returnId);
