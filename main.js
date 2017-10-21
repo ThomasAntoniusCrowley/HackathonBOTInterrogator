@@ -50,7 +50,7 @@ function getConversation(id, callback) {
           }});
 }
 
-function setQuestion(content, convId, callback)
+function setQuestion(content, convId, callback) {
 
     var values = {
         Content: content,
@@ -107,7 +107,9 @@ function main() {
         setConversation(response, function(currentConvId) {
 
             rl.question("What is your question? ", function(question) {
-                setQuestion(question, currentConvId);
+                setQuestion(question, currentConvId, function(returnId) {
+                    console.log(returnId);
+                });
             });
         });
     });
