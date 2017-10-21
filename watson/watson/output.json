@@ -1,0 +1,169 @@
+{
+  "usage": {
+    "text_units": 1,
+    "text_characters": 159,
+    "features": 7
+  },
+  "semantic_roles": [
+    {
+      "subject": {
+        "text": "you"
+      },
+      "sentence": "If you have something in mind, just type it in.",
+      "object": {
+        "text": "something"
+      },
+      "action": {
+        "verb": {
+          "text": "have",
+          "tense": "present"
+        },
+        "text": "have",
+        "normalized": "have"
+      }
+    },
+    {
+      "subject": {
+        "text": "You"
+      },
+      "sentence": " You got this.",
+      "object": {
+        "text": "this"
+      },
+      "action": {
+        "verb": {
+          "text": "get",
+          "tense": "past"
+        },
+        "text": "got",
+        "normalized": "get"
+      }
+    }
+  ],
+  "relations": [],
+  "language": "en",
+  "keywords": [
+    {
+      "text": "naturally delicious recipes",
+      "sentiment": {
+        "score": 0.831781
+      },
+      "relevance": 0.915489,
+      "emotion": {
+        "sadness": 0.021021,
+        "joy": 0.816649,
+        "fear": 0.025432,
+        "disgust": 0.008714,
+        "anger": 0.011492
+      }
+    },
+    {
+      "text": "type",
+      "sentiment": {
+        "score": 0.417327
+      },
+      "relevance": 0.637513,
+      "emotion": {
+        "sadness": 0.101763,
+        "joy": 0.050407,
+        "fear": 0.045246,
+        "disgust": 0.154693,
+        "anger": 0.047701
+      }
+    },
+    {
+      "text": "mind",
+      "sentiment": {
+        "score": 0
+      },
+      "relevance": 0.580889,
+      "emotion": {
+        "sadness": 0.093197,
+        "joy": 0.473766,
+        "fear": 0.156221,
+        "disgust": 0.038475,
+        "anger": 0.099909
+      }
+    },
+    {
+      "text": "Need",
+      "sentiment": {
+        "score": -0.665233
+      },
+      "relevance": 0.571681,
+      "emotion": {
+        "sadness": 0.208287,
+        "joy": 0.139493,
+        "fear": 0.263417,
+        "disgust": 0.050926,
+        "anger": 0.094332
+      }
+    },
+    {
+      "text": "menu",
+      "sentiment": {
+        "score": 0
+      },
+      "relevance": 0.565901,
+      "emotion": {
+        "sadness": 0,
+        "joy": 0,
+        "fear": 0,
+        "disgust": 0,
+        "anger": 0
+      }
+    },
+    {
+      "text": "time",
+      "sentiment": {
+        "score": 0
+      },
+      "relevance": 0.565056,
+      "emotion": {
+        "sadness": 0,
+        "joy": 0,
+        "fear": 0,
+        "disgust": 0,
+        "anger": 0
+      }
+    }
+  ],
+  "entities": [],
+  "emotion": {
+    "document": {
+      "emotion": {
+        "sadness": 0.053917,
+        "joy": 0.691573,
+        "fear": 0.081002,
+        "disgust": 0.015047,
+        "anger": 0.031944
+      }
+    }
+  },
+  "concepts": [
+    {
+      "text": "Concepts in metaphysics",
+      "relevance": 0.860707,
+      "dbpedia_resource": "http://dbpedia.org/resource/Concepts_in_metaphysics"
+    },
+    {
+      "text": "Psychology",
+      "relevance": 0.752376,
+      "dbpedia_resource": "http://dbpedia.org/resource/Psychology"
+    }
+  ],
+  "categories": [
+    {
+      "score": 0.57873,
+      "label": "/health and fitness/disease/diabetes"
+    },
+    {
+      "score": 0.57467,
+      "label": "/art and entertainment/visual art and design/design"
+    },
+    {
+      "score": 0.077667,
+      "label": "/health and fitness/disease/gerd and acid reflux"
+    }
+  ]
+}

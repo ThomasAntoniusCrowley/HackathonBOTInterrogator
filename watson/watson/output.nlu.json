@@ -1,0 +1,58 @@
+{
+  "usage": {
+    "text_units": 1,
+    "text_characters": 161,
+    "features": 2
+  },
+  "sentiment": {
+    "document": {
+      "score": 0.13173,
+      "label": "positive"
+    }
+  },
+  "language": "en",
+  "keywords": [
+    {
+      "text": "naturally delicious recipes",
+      "sentiment": {
+        "score": 0.831781
+      },
+      "relevance": 0.919493
+    },
+    {
+      "text": "type",
+      "sentiment": {
+        "score": 0.417327
+      },
+      "relevance": 0.638376
+    },
+    {
+      "text": "mind",
+      "sentiment": {
+        "score": 0.0
+      },
+      "relevance": 0.580923
+    },
+    {
+      "text": "Need",
+      "sentiment": {
+        "score": -0.665233
+      },
+      "relevance": 0.572314
+    },
+    {
+      "text": "menu",
+      "sentiment": {
+        "score": 0.0
+      },
+      "relevance": 0.566773
+    },
+    {
+      "text": "time",
+      "sentiment": {
+        "score": 0.0
+      },
+      "relevance": 0.565944
+    }
+  ]
+}
