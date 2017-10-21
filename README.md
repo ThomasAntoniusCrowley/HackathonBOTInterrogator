@@ -9,4 +9,4 @@ npm
 ## To run slackbot:
 `npm install`
 
-`nodejs example/example_slackbot.js`
+`nodejs slackbot/slackbot.js`
