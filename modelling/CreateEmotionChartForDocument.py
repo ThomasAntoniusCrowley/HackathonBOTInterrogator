@@ -4,12 +4,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def closeline(line):
-    x_arg, y_arg = line.get_data()
-    x_arg = np.concatenate((x_arg, [x_arg[0]]))
-    y_arg = np.concatenate((y_arg, [y_arg[0]]))
-    line.set_data(x_arg, y_arg)
-
 def get_big_5_values(data):
 
     openness = data['tree']['children'][0]['children'][0]['children'][0]['percentage']
@@ -70,7 +64,7 @@ def main():
     plt.title("Big 5 Personality Star Chart")
 
     print("Saving image file...")
-    plt.savefig(f'{OUTPUT_FOLDER}/star_{file_name}.png')
+    plt.savefig(f'{OUTPUT_FOLDER}/{file_name}.png')
 
     print("Finished!")
 
