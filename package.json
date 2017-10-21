@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "dependencies": {
         "mysql" : "2.15.0",
-        "watson-developer-cloud" : "2.41.1"
+        "watson-developer-cloud" : "2.41.1",
+        "botkit" : "0.6.4"
     }
 }
