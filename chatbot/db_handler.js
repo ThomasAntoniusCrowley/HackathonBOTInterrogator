@@ -107,4 +107,11 @@ function main() {
     });
 }
 
-main();
+module.export = {
+    getConversation: getConversation,
+    setConversation: setConversation,
+    getQuestion: getQuestion,
+    setQuestion: setQuestion,
+    getResponse: getResponse,
+    setResponse: setResponse
+}
