@@ -1,1 +1,4 @@
 node_modules/
+
+# Ignore the outputs from the modelling script.
+/Modelling/output/
