@@ -6,6 +6,8 @@ const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-l
 const Botkit = require('botkit');
 const slackController = Botkit.slackbot();
 const db_handler = require('./../slackbot/db_handler');
+const insight = require('./../watson/watson/index');
+const PythonShell = require('python-shell');
 
 const hostname = '127.0.0.1';
 const port = 8000;
@@ -69,63 +71,102 @@ db_handler.setConversation('TestBot', function(result) {
 
 slackBot.startRTM();
 
+function saveJsonFile(filename, data) {
+    fs.writeFile(filename, JSON.stringify(data), function(err){
+          if(err){console.log(err);} else {console.log("Success.");}
+    });
+}
+
 slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], function (bot, message) {
     db_handler.setQuestion(message.text, currentConvId, function(questionId){
+        console.log(message.text === "Bye");
+
+        if (message.text === "Bye") {
+            console.log("Chat ended.");
+            bot.reply(message, "Bye!");
+            endChat(currentConvId, "output.txt");
+        }
+
         if (message.watsonData.output.text[0] === 'ErrorMessage') {
             clev.query(message.text).then(function (response) {
 
                 parameters.text = response.output;
 
                 bot.reply(message, response.output);
-                db_handler.setResponse(response.output, questionId, function(None){});
+                db_handler.setResponse(response.output, questionId, function(responseId) {
+
+                    natural_language_understanding.analyze(parameters, function(err, responseNlu) {
+
+                        if (err)
+                        {
+                            //console.log('error:', err);
+
+                            //res.setHeader('Content-Type', 'application/json');
+                            //res.end(JSON.stringify({cleverbot: response.output, watson: null}));
+                            console.log(err);
+                            console.log(response.output);
+                        }
+                        else
+                        {
+                            //res.setHeader('Content-Type', 'application/json');
+                            //res.end(JSON.stringify({cleverbot: response.output, watson: responseNlu}));
+                            console.log(response.output);
+                            console.log(responseNlu);
+                            db_handler.setAnalytics(responseNlu, responseId, function(None){});
+                        }
+                    });
+                });
+            });
+        } else {
+            bot.reply(message, message.watsonData.output.text.join('\n'));
+
+            parameters.text = message.watsonData.output.text[0];
+            db_handler.setResponse(message.watsonData.output.text, questionId, function(responseId){
 
                 natural_language_understanding.analyze(parameters, function(err, responseNlu) {
 
                     if (err)
                     {
-                        //console.log('error:', err);
-
-                        //res.setHeader('Content-Type', 'application/json');
-                        //res.end(JSON.stringify({cleverbot: response.output, watson: null}));
+                        // res.setHeader('Content-Type', 'application/json');
+                        // res.end(JSON.stringify({slackbot: message.watsonData.output.text, watson: null}));
                         console.log(err);
-                        console.log(response.output);
+                        console.log(message.watsonData.output.text);
+                        console.log(typeof(message.watsonData.output.text[0]));
                     }
                     else
                     {
-                        //res.setHeader('Content-Type', 'application/json');
-                        //res.end(JSON.stringify({cleverbot: response.output, watson: responseNlu}));
-                        console.log(response.output);
+                        // res.setHeader('Content-Type', 'application/json');
+                        // res.end(JSON.stringify({slackbot: message.watsonData.output.text, watson: responseNlu}));
+                        console.log(message.watsonData.output.text);
                         console.log(responseNlu);
+                        db_handler.setAnalytics(responseNlu, responseId, function(None){});
                     }
                 });
-            });
-        } else {
-            bot.reply(message, message.watsonData.output.text.join('\n'));
-            db_handler.setResponse(message.watsonData.output.text, questionId, function(None){});
-
-            parameters.text = message.watsonData.output.text[0];
-
-            natural_language_understanding.analyze(parameters, function(err, responseNlu) {
-
-                if (err)
-                {
-                    // res.setHeader('Content-Type', 'application/json');
-                    // res.end(JSON.stringify({slackbot: message.watsonData.output.text, watson: null}));
-                    console.log(err);
-                    console.log(message.watsonData.output.text);
-                    console.log(typeof(message.watsonData.output.text[0]));
-                }
-                else
-                {
-                    // res.setHeader('Content-Type', 'application/json');
-                    // res.end(JSON.stringify({slackbot: message.watsonData.output.text, watson: responseNlu}));
-                    console.log(message.watsonData.output.text);
-                    console.log(responseNlu);
-                }
             });
         }
     });
 });
+
+function endChat(conversationId, fileName) {
+    db_handler.getAllQAndA(conversationId, function(rows) {
+        for (var row = 0; row < rows.length; row++) {
+            console.log(rows[row].Content);
+            fs.appendFile(fileName, rows[row].Content, function(err){
+                if(err) { console.log(err); }
+            });
+        }
+
+        insight.getPersonalityInsights(fileName);
+
+        PythonShell.run('../modelling/CreateStarChart.py', 'big5.json', function (err, results) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(results);
+            }
+        });
+    });
+}
 
 const server = http.createServer((req, res) => {
 
@@ -136,7 +177,8 @@ const server = http.createServer((req, res) => {
     if (path.pathname == '/api')
     {
         var message = path.query.message;
-
+        console.log("Calling end chat.");
+        endChat(currentConvId);
     }
     else
     {

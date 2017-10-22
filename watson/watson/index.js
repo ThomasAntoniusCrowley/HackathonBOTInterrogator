@@ -8,42 +8,51 @@ const personality_insights = new PersonalityInsightsV2({
   password: '3zSJ0F1Z5KRO'
 });
 
+function saveJsonFile(filename, data) {
+    fs.writeFile(filename, JSON.stringify(data), function(err){
+          if(err){console.log(err);} else {console.log("Success.");}
+    });
+}
+
 var file = process.argv.slice(2)[0];
 
-fs.readFile(file, function(err, data){ 
+function getPersonalityInsights(file) {
+    fs.readFile(file, function(err, data){ 
 
-    if (err)
-    {
-        console.log(err)
-    }
-    else
-    {
-        personality_insights.profile(
-            {
-                text: data.toString()
-            },
-            function(err, response) 
-            {
+        if (err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            personality_insights.profile(
+                {
+                    text: data.toString()
+                },
+                function(err, response) 
+                {
 
-                if (err) {
-                    console.log('error:', err);
-                } else {
-                    console.log(JSON.stringify(response, null, 2));
-                    var big5 = {
-                        openness: response.tree.children[0].children[0].children[0],
-                        conscientiousness: response.tree.children[0].children[0].children[1],
-                        extraversion: response.tree.children[0].children[0].children[2],
-                        agreeableness: response.tree.children[0].children[0].children[3],
-                        neuroticism: response.tree.children[0].children[0].children[4],
-                    };
+                    if (err) {
+                        console.log('error:', err);
+                    } else {
+                        console.log(JSON.stringify(response, null, 2));
+                        var big5 = {
+                            openness: response.tree.children[0].children[0].children[0],
+                            conscientiousness: response.tree.children[0].children[0].children[1],
+                            extraversion: response.tree.children[0].children[0].children[2],
+                            agreeableness: response.tree.children[0].children[0].children[3],
+                            neuroticism: response.tree.children[0].children[0].children[4],
+                        };
+                        saveJsonFile("big5.json", response);
 
-                    //console.log(big5);
+                        //console.log(big5);
+                    }
                 }
-            }
-        );
-    }
+            );
+        }
+    });
+}
 
-});
-
-
-
+module.exports = {
+    getPersonalityInsights: getPersonalityInsights
+}

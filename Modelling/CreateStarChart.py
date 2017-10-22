@@ -41,6 +41,7 @@ def main():
         data = json.load(json_file)
 
     percentage_dict = get_big_5_values(data)
+    big_5_df = pd.DataFrame.from_dict(percentage_dict, orient='index')
 
     fig = plt.figure()
     axis = fig.add_subplot(111, projection="polar")
