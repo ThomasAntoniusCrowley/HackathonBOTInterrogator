@@ -2,6 +2,7 @@ CREATE DATABASE hackathon;
 
 USE hackathon;
 
+DROP TABLE IF EXISTS `Response`;
 CREATE TABLE Response
 (
     Id         INT(11) NOT NULL AUTO_INCREMENT,
@@ -11,6 +12,7 @@ CREATE TABLE Response
     PRIMARY KEY (ID)
 );
 
+DROP TABLE IF EXISTS `Question`;
 CREATE TABLE Question
 (
     Id             INT(11) NOT NULL AUTO_INCREMENT,
@@ -20,11 +22,21 @@ CREATE TABLE Question
     PRIMARY KEY (ID)
 );
 
+DROP TABLE IF EXISTS `Conversation`;
 CREATE TABLE Conversation
 (
     Id             INT(11) NOT NULL AUTO_INCREMENT,
     Owner          CHAR(255) NOT NULL,
     StartDate      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     EndDate        TIMESTAMP NULL,
+    PRIMARY KEY (ID)
+);
+
+DROP TABLE IF EXISTS `WatsonAnalytics`;
+CREATE TABLE WatsonAnalytics
+(
+    Id             INT(11) NOT NULL AUTO_INCREMENT,
+    Analytics      JSON,
+    ResponseId     INT(11) NOT NULL,
     PRIMARY KEY (ID)
 );
