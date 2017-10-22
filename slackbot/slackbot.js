@@ -1,5 +1,6 @@
 var Botkit = require('botkit');
 var slackController = Botkit.slackbot();
+var db_handler = require('./db_handler');
 
 var slackBot = slackController.spawn({
     token: 'xoxb-260082394741-6PASW8ptXm8aQuNA4UxNth74'
@@ -14,14 +15,24 @@ var watsonMiddleware = require('botkit-middleware-watson')({
 });
 
 slackController.middleware.receive.use(watsonMiddleware.receive);
+
+var currentConvId;
+db_handler.setConversation('TetsBot', function(result) { 
+    currentConvId = result;
+});
+
 slackBot.startRTM();
 
 slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], function (bot, message) {
-    if (message.watsonError) {
-        bot.reply(message, "I'm sorry, but for technical reasons I can't respond to your message");
-        bot.reply(message, message.watsonError);
-        console.log(message.watsonError)
-    } else {
-        bot.reply(message, message.watsonData.output.text.join('\n'));
-    }
+    db_handler.setQuestion(message.text, currentConvId, function(questionId){
+        if (message.watsonError) {
+            bot.reply(message, "I'm sorry, but for technical reasons I can't respond to your message");
+            bot.reply(message, message.watsonError);
+            console.log(message.watsonError)
+        } else {
+            bot.reply(message, message.watsonData.output.text.join('\n'));
+            db_handler.setResponse(message.watsonData.output.text, questionId, function(None){});
+        }
+    });
+    
 });

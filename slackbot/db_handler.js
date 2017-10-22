@@ -4,7 +4,7 @@ var readline = require('readline');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : 'HipHip',
+  password : '324569',
   database : 'hackathon'
 });
 
@@ -80,7 +80,7 @@ function setResponse(content, questionId, callback) {
 }
 
 function setConversation(name, callback) {
-
+    
     var values = {
         Owner: name
     }
@@ -107,7 +107,7 @@ function main() {
     });
 }
 
-module.export = {
+module.exports = {
     getConversation: getConversation,
     setConversation: setConversation,
     getQuestion: getQuestion,
