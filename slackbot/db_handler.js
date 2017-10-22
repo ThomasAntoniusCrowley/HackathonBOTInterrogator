@@ -25,6 +25,17 @@ function getQuestion(id, callback) {
           }});
 }
 
+function getAnalytics(id, callback) {
+
+    connection.query('SELECT * from WatsonAnalytics WHERE id = ?', id, function(err, rows) {
+          if (!err) {
+                callback(rows);
+          } else {
+                console.log('Error while performing Query.');
+                throw(err);
+          }});
+}
+
 function getResponse(id, callback) {
 
     connection.query('SELECT * from Response WHERE id = ?', id, function(err, rows) {
@@ -80,12 +91,28 @@ function setResponse(content, questionId, callback) {
 }
 
 function setConversation(name, callback) {
-    
+
     var values = {
         Owner: name
     }
 
     connection.query('INSERT INTO Conversation SET ?', values, function(error, result) {
+        if (error) {
+            console.log(error.message);
+        } else {
+            callback(result.insertId);
+        }
+    });
+}
+
+function setConversation(jsonObj, responseId, callback) {
+
+    var values = {
+        Analytics: jsonObj,
+        ResponseId: responseId
+    }
+
+    connection.query('INSERT INTO WatsonAnalytics SET ?', values, function(error, result) {
         if (error) {
             console.log(error.message);
         } else {
@@ -113,5 +140,7 @@ module.exports = {
     getQuestion: getQuestion,
     setQuestion: setQuestion,
     getResponse: getResponse,
-    setResponse: setResponse
+    setResponse: setResponse,
+    getWatsonAnalytics: getWatsonAnalytics,
+    setWatsonAnalytics: setWatsonAnalytics
 }
