@@ -13,6 +13,16 @@ var rl = readline.createInterface({
     output: process.stdout
 });
 
+function getAllQAndA(convId, callback) {
+
+    connection.query('SELECT * from Question, Response WHERE Question.Id = Response.QuestionId AND Question.ConversationId = ?', convId, function(err, rows) {
+          if (!err) {
+                callback(rows);
+          } else {
+                console.log('Error while performing Query.');
+                throw(err);
+          }});
+}
 
 function getQuestion(id, callback) {
 
@@ -142,5 +152,6 @@ module.exports = {
     getResponse: getResponse,
     setResponse: setResponse,
     getAnalytics: getAnalytics,
-    setAnalytics: setAnalytics
+    setAnalytics: setAnalytics,
+    getAllQAndA: getAllQAndA
 }
