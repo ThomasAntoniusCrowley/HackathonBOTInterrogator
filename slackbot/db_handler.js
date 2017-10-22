@@ -4,7 +4,7 @@ var readline = require('readline');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : '324569',
+  password : 'HipHip',
   database : 'hackathon'
 });
 
@@ -105,7 +105,7 @@ function setConversation(name, callback) {
     });
 }
 
-function setConversation(jsonObj, responseId, callback) {
+function setAnalytics(jsonObj, responseId, callback) {
 
     var values = {
         Analytics: jsonObj,
@@ -141,6 +141,6 @@ module.exports = {
     setQuestion: setQuestion,
     getResponse: getResponse,
     setResponse: setResponse,
-    getWatsonAnalytics: getWatsonAnalytics,
-    setWatsonAnalytics: setWatsonAnalytics
+    getAnalytics: getAnalytics,
+    setAnalytics: setAnalytics
 }
