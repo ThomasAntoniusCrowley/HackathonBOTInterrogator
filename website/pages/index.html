@@ -1,17 +1,91 @@
-<html>
+<!doctype html>
+<html lang="en">
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../../../favicon.ico">
+
+        <title>Jumbotron Template for Bootstrap</title>
+
+        <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+        <!-- Custom styles for this template -->
+        <link href="jumbotron.css" rel="stylesheet">
     </head>
+
     <body>
-        <h1>Russian, Chat!!!</h1>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <input type="text" name="lname" id="chat"><br>
-        <input type="submit" value="Submit" id="button">
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-        <ul id="msg">
-        </ul>
+        <main role="main">
 
-        <!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+            <div class="container">
+
+                <h1 class="display-3 hidden">Hello, Robot!</h1>
+
+                    <div class="form-group">
+
+                        <div class="row ">
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="chat" placeholder="Type your message here...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-warning btn-sm" id="button">
+                                            Send
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+        </div>
+
+        </main>
+        
+
+<div class="container center">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <ul class="chat" id="msg" style="list-style: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <!--<footer class="container">-->
+            <!--<p>&copy; Company 2017</p>-->
+        <!--</footer>-->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
@@ -20,25 +94,31 @@
 
     <script>
 
-
         function doStuff()
         {
             var msg = document.getElementById('chat').value;
             document.getElementById('chat').value = '';
 
 
-            <!--console.log(msg);-->
+            console.log(msg);
 
             if (msg != '')
             {
-                $("#msg").append("<li> Me: " + msg + "</li>");
+                $("#msg").prepend('<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font">Me</strong> <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>' + (new Date()).toLocaleString() + '</small></div><p>' + msg + '</p></div></li>');
+
                 $.ajax({
                     type: 'GET',
-                    url: '/api?adfads=34',
-                    success: function(data) {$("#msg").append("<li> <b> BOT </b> Here is a random numerb brah... " + data.number.toString() + "</li>"); console.log(data);}
+                    url: '/api?message=' + msg,
+                    success: function(data) {
+                        $("#msg").prepend('<hr><li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font">Jack Sparrow</strong> <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>' + (new Date()).toLocaleString() + '</small></div><p>' + data.cleverbot + '</p></div></li>');
+
+                        console.log(data);
+                    }
                 });
             }
         }
+
+
 
         $(document).ready(function() {
             $("#button").click(function(){
@@ -55,5 +135,6 @@
         });
 
     </script>
+
     </body>
 </html>
