@@ -1,4 +1,3 @@
-const http = require('http');
 const fs = require('fs');
 const url = require('url')
 const Cleverbot = require('cleverbot');
@@ -8,6 +7,11 @@ const slackController = Botkit.slackbot();
 const db_handler = require('./../slackbot/db_handler');
 const insight = require('./../watson/watson/index');
 const PythonShell = require('python-shell');
+
+
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 const hostname = '127.0.0.1';
 const port = 8000;
@@ -86,11 +90,11 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
             bot.reply(message, "Bye!");
             endChat(currentConvId, "output.txt");
         }
-
-        if (message.watsonData.output.text[0] === 'ErrorMessage') {
+        else if (message.watsonData.output.text[0] === 'ErrorMessage') {
             clev.query(message.text).then(function (response) {
 
-                parameters.text = response.output;
+                //parameters.text = response.output;
+                parameters.text = message.text;
 
                 bot.reply(message, response.output);
                 db_handler.setResponse(response.output, questionId, function(responseId) {
@@ -113,6 +117,7 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
                             console.log(response.output);
                             console.log(responseNlu);
                             db_handler.setAnalytics(responseNlu, responseId, function(None){});
+                            io.emit('emotions', responseNlu);
                         }
                     });
                 });
@@ -120,7 +125,10 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
         } else {
             bot.reply(message, message.watsonData.output.text.join('\n'));
 
-            parameters.text = message.watsonData.output.text[0];
+            //parameters.text = message.watsonData.output.text[0];
+
+            parameters.text = message.text;
+
             db_handler.setResponse(message.watsonData.output.text, questionId, function(responseId){
 
                 natural_language_understanding.analyze(parameters, function(err, responseNlu) {
@@ -140,6 +148,8 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
                         console.log(message.watsonData.output.text);
                         console.log(responseNlu);
                         db_handler.setAnalytics(responseNlu, responseId, function(None){});
+
+                        io.emit('emotions', responseNlu);
                     }
                 });
             });
@@ -150,50 +160,28 @@ slackController.hears(['.*'], ['direct_message', 'direct_mention', 'mention'], f
 function endChat(conversationId, fileName) {
     db_handler.getAllQAndA(conversationId, function(rows) {
         for (var row = 0; row < rows.length; row++) {
-            console.log(rows[row].Content);
-            fs.appendFile(fileName, rows[row].Content, function(err){
+            console.log(rows[row].ContentQ);
+            fs.appendFile(fileName, rows[row].ContentQ, function(err){
                 if(err) { console.log(err); }
             });
         }
 
-        insight.getPersonalityInsights(fileName);
-
-        PythonShell.run('../modelling/CreateStarChart.py', 'big5.json', function (err, results) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(results);
-            }
-        });
+        insight.getPersonalityInsights(fileName, function(data){ io.emit('big5', data); });
     });
 }
 
-const server = http.createServer((req, res) => {
 
-    res.statusCode = 200;
-
-    var path = url.parse(req.url, true);
-
-    if (path.pathname == '/api')
-    {
-        var message = path.query.message;
-        console.log("Calling end chat.");
-        endChat(currentConvId);
-    }
-    else
-    {
-        res.setHeader('Content-Type', 'text/html');
-        fs.readFile('./pages/index.html', function read(err, data) {
-            if (err) {
-                throw err;
-            }
-            else {
-                res.end(data.toString());
-            }
-        });
-    }
+io.on('connection', function(socket){
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+      console.log('user disconnected');
+    });
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/pages/index.html');
+});
+
+http.listen(3000, function(){
+    console.log('listening on *:3000');
 });

@@ -16,7 +16,7 @@ function saveJsonFile(filename, data) {
 
 var file = process.argv.slice(2)[0];
 
-function getPersonalityInsights(file) {
+function getPersonalityInsights(file, callback) {
     fs.readFile(file, function(err, data){ 
 
         if (err)
@@ -35,7 +35,7 @@ function getPersonalityInsights(file) {
                     if (err) {
                         console.log('error:', err);
                     } else {
-                        console.log(JSON.stringify(response, null, 2));
+                        //console.log(JSON.stringify(response, null, 2));
                         var big5 = {
                             openness: response.tree.children[0].children[0].children[0],
                             conscientiousness: response.tree.children[0].children[0].children[1],
@@ -43,7 +43,9 @@ function getPersonalityInsights(file) {
                             agreeableness: response.tree.children[0].children[0].children[3],
                             neuroticism: response.tree.children[0].children[0].children[4],
                         };
-                        saveJsonFile("big5.json", response);
+
+                        callback(big5);
+                        //saveJsonFile("big5.json", response);
 
                         //console.log(big5);
                     }

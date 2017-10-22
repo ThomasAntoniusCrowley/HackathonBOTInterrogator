@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS `Response`;
 CREATE TABLE Response
 (
     Id         INT(11) NOT NULL AUTO_INCREMENT,
-    Content    TEXT(500) NOT NULL,
+    ContentR    TEXT(5000) NOT NULL,
     QuestionId INT(11) NOT NULL,
     Date_Time  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     PRIMARY KEY (ID)
@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS `Question`;
 CREATE TABLE Question
 (
     Id             INT(11) NOT NULL AUTO_INCREMENT,
-    Content        TEXT(500) NOT NULL,
+    ContentQ        TEXT(500) NOT NULL,
     ConversationId INT(11) NOT NULL,
     Date_Time      TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     PRIMARY KEY (ID)

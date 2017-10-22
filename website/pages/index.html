@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 
         <!-- Custom styles for this template -->
-        <link href="jumbotron.css" rel="stylesheet">
+        <!--<link href="./jumbotron.css" rel="stylesheet">-->
     </head>
 
     <body>
@@ -40,101 +40,207 @@
         <!-- Main jumbotron for a primary marketing message or call to action -->
         <div class="jumbotron">
             <div class="container">
-
-                <h1 class="display-3 hidden">Hello, Robot!</h1>
-
-                    <div class="form-group">
-
-                        <div class="row ">
-                            <div class="col-sm-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="chat" placeholder="Type your message here...">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-warning btn-sm" id="button">
-                                            Send
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
+                <div class="row justify-content-md-center">
+                    <div class="col-md-6">
+                        <h2 id="title"> Emotions of the Chatbot </h2>
                     </div>
-            </div>
-        </div>
-
-        </main>
-        
-
-<div class="container center">
-    <div class="row">
-        <div class="col-md-5">
-            <div class="panel panel-primary">
-                <div class="panel-body">
-                    <ul class="chat" id="msg" style="list-style: none;">
+                    <div class="col-md-3" id="emotions-text">
+                        <h3 id="title"> Emotionally Charged Keywords </h3>
+                    </div>
+                    <div class="col-md-3" id="emotions-text">
+                        <h3 id="title"> Concepts </h3>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <div class="col-md-6">
+                        <canvas id="myChart" width="100px" height="100px"></canvas>
+                        <canvas id="myChart2" width="100px" height="100px" style="display:none"></canvas>
+                    </div>
+                    <div class="col-md-3">
+                        <ul id="keywords" style="list-style-type: none" size="50">
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <ul id="concepts" style="list-style-type: none" size="50">
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-        <!--<footer class="container">-->
-            <!--<p>&copy; Company 2017</p>-->
-        <!--</footer>-->
+        </main>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
 
 
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
-    <script>
+        <script src="/socket.io/socket.io.js"></script>
 
-        function doStuff()
-        {
-            var msg = document.getElementById('chat').value;
-            document.getElementById('chat').value = '';
+        <script>
+
+            var socket = io();
 
 
-            console.log(msg);
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var ctx2 = document.getElementById("myChart2").getContext('2d');
 
-            if (msg != '')
-            {
-                $("#msg").prepend('<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font">Me</strong> <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>' + (new Date()).toLocaleString() + '</small></div><p>' + msg + '</p></div></li>');
+            var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ["Anger", "Disgust", "Fear", "Joy", "Sadness"],
+                    datasets: [{
+                        label: 'Percentage',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                    }
+                }
+            });
 
-                $.ajax({
-                    type: 'GET',
-                    url: '/api?message=' + msg,
-                    success: function(data) {
-                        $("#msg").prepend('<hr><li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font">Jack Sparrow</strong> <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>' + (new Date()).toLocaleString() + '</small></div><p>' + data.cleverbot + '</p></div></li>');
+            var myChart2 = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ["Openness", "Conscientiousness", "Extraversion", "Agreeableness", "Neuroticism"],
+                    datasets: [{
+                        label: 'Percentage',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                
+                
+                    scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true,
+                            hidden: true
+                        }
+                    }]
+                    }
+                }
+            });
 
-                        console.log(data);
+
+            function addData(chart, values) {
+                chart.data.datasets[0].data = values;
+                chart.type = 'radar';
+                chart.update();
+            }
+
+            socket.on('big5', function(msg){
+                document.getElementById("myChart").style.display = 'none';
+                document.getElementById("myChart2").style.display = 'inline';
+
+                document.getElementById("emotions-text").style.display = 'none';
+
+                $("#keywords").empty();
+                $("#concepts").empty();
+                // document.getElementById("title").value = "Big Five Traits";
+                $("#title").text("Big Five Traits");
+
+                // console.log(msg);
+                // console.log([msg.openness.percentage, msg.conscientiousness.percentage, msg.extraversion.percentage, msg.agreeableness.percentage, msg.neuroticism]);
+
+                addData(myChart2, [msg.openness.percentage, msg.conscientiousness.percentage, msg.extraversion.percentage, msg.agreeableness.percentage, msg.neuroticism]);
+            });
+
+            socket.on('emotions', function(msg){
+
+                console.log(msg);
+
+                $("#keywords").empty();
+                $("#concepts").empty();
+
+                msg.keywords.forEach(function(item){
+
+                    console.log(item);
+                    console.log(item.emotion);
+
+                    if (item.emotion.anger > 0.60)
+                    {
+                        $("#keywords").append('<li style="color: rgb(255, 99, 132)">' +  '<h4>' + item.text + '</h4>' + '</li>');
+                        return;
+                    }
+                    else if (item.emotion.disgust > 0.60)
+                    {
+                        $("#keywords").append('<li style="color: rgb(54, 162, 235)">' +  '<h4>' + item.text + '</h4>' + '</li>');
+                        return;
+                    }
+                    else if (item.emotion.fear > 0.60)
+                    {
+                        $("#keywords").append('<li style="color: rgb(255, 206, 86)">' +  '<h4>' + item.text + '</h4>' + '</li>');
+                        return;
+                    }
+                    else if (item.emotion.joy > 0.60)
+                    {
+                        $("#keywords").append('<li style="color: rgb(75, 192, 192)">' +  '<h4>' + item.text + '</h4>' + '</li>');
+                        return;
+                    }
+                    else (item.emotion.sadness > 0.60)
+                    {
+                        $("#keywords").append('<li style="color: rgb(153, 102, 255)">' +  '<h4>' + item.text + '</h4>' + '</li>');
+                        return;
                     }
                 });
-            }
-        }
+
+                msg.concepts.forEach(function(item){
+                    $("#concepts").append('<li>' +  '<h4>' + item.text + '('  + item.relevance.toFixed(2).toString() + ')</h4>' + '</li>');
+                });
+
+                var e = msg.emotion.document.emotion;
+
+                if (e.anger + e.disgust + e.fear + e.joy + e.sadness != 0.0)
+                {
+                    addData(myChart, [e.anger * 100, e.disgust * 100, e.fear * 100, e.joy * 100, e.sadness * 100]);
+                }
+            });
 
 
 
-        $(document).ready(function() {
-            $("#button").click(function(){
-                doStuff();
-            }); 
-        });
 
 
-        $('#chat').keypress(function(e){
-            if(e.keyCode==13)
-            {
-                doStuff();
-            }
-        });
-
-    </script>
-
+        </script>
     </body>
 </html>

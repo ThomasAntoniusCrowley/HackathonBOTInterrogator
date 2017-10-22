@@ -68,10 +68,10 @@ function getConversation(id, callback) {
           }});
 }
 
-function setQuestion(content, convId, callback) {
+function setQuestion(contentQ, convId, callback) {
 
     var values = {
-        Content: content,
+        ContentQ: contentQ,
         ConversationId: convId
     }
 
@@ -87,7 +87,7 @@ function setQuestion(content, convId, callback) {
 function setResponse(content, questionId, callback) {
 
     var values = {
-        Content: content,
+        ContentR: content,
         QuestionId: questionId
     }
 
